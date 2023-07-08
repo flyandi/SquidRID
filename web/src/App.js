@@ -201,7 +201,7 @@ function App() {
 
   const handleModeUpdate = (o = {}) => {
     const dt = { appMode, flyMode, pathMode, spd: position.spd, alt: position.alt, ...o }
-    const pp = path.length ? toPath([[position.lat, position.lng], ...path, [position.lat, position.lng]]) : [];
+    const pp = path.length ? toPath([...path]) : [];
     console.log(pp);
     serialCommand(Commands.store_mode, [dt.appMode + "", dt.flyMode + "", dt.pathMode + "", dt.spd + "", dt.alt + "", path.length, ...deflatePath(pp)]);
   }
