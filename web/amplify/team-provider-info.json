@@ -1,0 +1,23 @@
+{
+  "dev": {
+    "awscloudformation": {
+      "AuthRoleName": "amplify-squidrid-dev-224108-authRole",
+      "UnauthRoleArn": "arn:aws:iam::471804264941:role/amplify-squidrid-dev-224108-unauthRole",
+      "AuthRoleArn": "arn:aws:iam::471804264941:role/amplify-squidrid-dev-224108-authRole",
+      "Region": "us-west-1",
+      "DeploymentBucketName": "amplify-squidrid-dev-224108-deployment",
+      "UnauthRoleName": "amplify-squidrid-dev-224108-unauthRole",
+      "StackName": "amplify-squidrid-dev-224108",
+      "StackId": "arn:aws:cloudformation:us-west-1:471804264941:stack/amplify-squidrid-dev-224108/0b4f2dc0-189b-11ee-8bff-026403de0061",
+      "AmplifyAppId": "d36b60in1tvvl0"
+    },
+    "categories": {
+      "hosting": {
+        "amplifyhosting": {
+          "appId": "d36b60in1tvvl0",
+          "type": "manual"
+        }
+      }
+    }
+  }
+}
