@@ -43,6 +43,8 @@
 #include "squid_def.h"
 #include "squid_cmd.h"
 #include "squid_profiles.h"
+#include "squid_ltm.h"
+#include "squid_gps.h"
 
 ///  ////////////////////////////////////////////////////////////////////////////////////////// ///
 

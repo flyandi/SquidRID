@@ -16,9 +16,9 @@ The configurator is accessible at [https://squidrid.flyandi.net](https://squidri
 
 SquidRID run's on most ESP32 boards and requires the Arduino IDE to upload the firmware.
 
-## Sim Mode
+## Squid Mode
 
-Simulation Mode can simulate many aspects of the RemoteID protocol for a single drone instance.
+Squid Mode can simulate many aspects of the RemoteID protocol for a single drone instance also called a Squid. 
 
 ![](docs/sim.png)
 

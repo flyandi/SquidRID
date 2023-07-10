@@ -53,4 +53,10 @@ typedef enum {
   MODE_REAL = 2,
 } squid_app_mode_t;
 
+typedef enum {
+  EXTERNAL_NONE = 0,
+  EXTERNAL_GPS = 1,
+  EXTERNAL_LTM = 2,
+} squid_external_mode_t;
+
 #endif

@@ -66,9 +66,10 @@ const MapPestMode = {
 }
 
 const AppMode = {
-  Sim: 0,
+  Squid: 0,
   Pest: 1,
-  //Real: 3, // future
+  External: 2,
+
 }
 
 const FlyMode = {

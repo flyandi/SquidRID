@@ -60,6 +60,11 @@ typedef struct
   float pe_lng = 0.0;
   uint16_t pe_radius = 1500;
   uint8_t pe_spawn = 5;
+  squid_external_mode_t external;
+  uint16_t ext_baud;
+  uint16_t ext_rx_pin;
+  uint16_t ext_tx_pin;
+  
 } runtime_t;
 
 #endif
