@@ -57,6 +57,7 @@ static uint32_t current_t;
 static uint32_t pest_t;
 static uint32_t auto_t;
 static bool in_serial = false;
+static uint32_t ext_t;
 cmd_action_e cmd_action;
 
 ///  ////////////////////////////////////////////////////////////////////////////////////////// ///
@@ -120,9 +121,8 @@ void update_squid() {
     squid.setOperatorAltitude(-1000);
     squid.setSpeed(random(1, 30) * 10);
     squid.setRandomMac();
-  }
 
-  if (RUNTIME.mode == MODE_SIM) {
+  } else if (RUNTIME.mode == MODE_SIM || RUNTIME.mode == MODE_EXTERNAL) {
     bool isEmpty = true;
     for (int i = 0; i < 6; i++) {
       if (RUNTIME.mac[i] != 0x00) {
@@ -134,18 +134,40 @@ void update_squid() {
       squid.setMac(RUNTIME.mac);
     }
 
-    squid.setPathMode(RUNTIME.path_mode);
-    squid.setOriginLatLon(RUNTIME.lat, RUNTIME.lng);
+    if (RUNTIME.mode == MODE_EXTERNAL) {
+      squid.setPathMode(SD_PATH_MODE_IDLE);
+      // @todo shift
+      squid.setOriginLatLon(RUNTIME.lat, RUNTIME.lng);
+    } else {
+      squid.setPathMode(RUNTIME.path_mode);
+      squid.setOriginLatLon(RUNTIME.lat, RUNTIME.lng);
+    }
     squid.setAltitude(RUNTIME.alt);
+    squid.setSpeed(RUNTIME.speed);
     squid.setOperatorLatLon(RUNTIME.op_lat, RUNTIME.op_lng);
     squid.setOperatorAltitude(RUNTIME.op_alt);
-    squid.setSpeed(RUNTIME.speed);
   }
 
   squid.setMode(RUNTIME.fly_mode);
   squid.update();
   squid.getData(&RUNTIME.data);
   squid.getMac(RUNTIME.mac);
+}
+
+///  ////////////////////////////////////////////////////////////////////////////////////////// ///
+
+void update_external() {
+
+  if (RUNTIME.mode == MODE_EXTERNAL) {
+    if (RUNTIME.ext_protocol == EXTERNAL_GPS) {
+      ltm_end();
+      gps_begin(RUNTIME.ext_baud, RUNTIME.ext_rx_pin, RUNTIME.ext_tx_pin);
+    }
+    if (RUNTIME.ext_protocol = EXTERNAL_LTM) {
+      gps_end();
+      ltm_begin(RUNTIME.ext_baud, RUNTIME.ext_rx_pin, RUNTIME.ext_tx_pin);
+    }
+  }
 }
 
 ///  ////////////////////////////////////////////////////////////////////////////////////////// ///
@@ -157,6 +179,30 @@ void loop() {
       in_serial = true;
       RUNTIME.fly_mode == SD_MODE_FLY;
       update_squid();
+    }
+  }
+
+  if (RUNTIME.mode == MODE_EXTERNAL) {
+    if (RUNTIME.ext_protocol == EXTERNAL_GPS) {
+      gps_loop();
+    } else if (RUNTIME.ext_protocol == EXTERNAL_LTM) {
+      ltm_loop();
+    }
+
+    if (millis() - ext_t > EXTERNAL_INTERVAL) {
+      if (RUNTIME.ext_protocol == EXTERNAL_GPS) {
+        RUNTIME.lat = GPS_DATA.lat;
+        RUNTIME.lng = GPS_DATA.lng;
+        RUNTIME.alt = GPS_DATA.alt;
+        RUNTIME.speed = GPS_DATA.spd;
+      } else if (RUNTIME.ext_protocol == EXTERNAL_LTM) {
+        RUNTIME.lat = LTM_DATA.latitude;
+        RUNTIME.lng = LTM_DATA.longitude;
+        RUNTIME.alt = LTM_DATA.altitude;
+        RUNTIME.speed = LTM_DATA.groundSpeed;
+      }
+      update_squid();
+      ext_t = millis();
     }
   }
 
