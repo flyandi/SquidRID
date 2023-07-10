@@ -34,22 +34,7 @@
 #define SQUID_INSTANCE_H
 
 // CONFIGURATION ----------------------------------------------------------------------
-#define USE_WIFI_NAN 0
-#define USE_WIFI_BEACON 0
-#define USE_WIFI 0  // set to 0 if any of above enabled
-#define USE_BT 1    // ASTM F3411-19 /  ASD-STAN 4709-002.  .. good  for testing - gets picked up quickly
-#define USE_BEACON_FUNC 0
-#define USE_NATIVE_WIFI 0
-
-#define SATS_LEVEL_1 4
-#define SATS_LEVEL_2 7
-#define SATS_LEVEL_3 10
-
-#define DEFAULT_ALT 137.0
-#define DEFAULT_SPEED 60
-#define DEFAULT_NAME "UAS_NO_NAME"
-#define DEFAULT_REMOTE_ID ""
-#define DEFAULT_DESCRIPTION "Recreational"
+#include "squid_config.h"
 
 // INTERNAL ---------------------------------------------------------------------------
 #define WIFI_CHANNEL 6  // Be careful changing this.
@@ -69,24 +54,24 @@
 typedef enum {
   SD_MODE_IDLE = 0,
   SD_MODE_FLY = 1,
-} squid_mode_t;
+} squid_mode_e;
 
 typedef enum {
   SD_PATH_MODE_IDLE = 0,
   SD_PATH_MODE_RANDOM = 1,
   SD_PATH_MODE_FOLLOW = 2,
-} squid_path_mode_t;
+} squid_path_mode_e;
 
 typedef enum {
   SD_PATH_TYPE_NONE = 0,
   SD_PATH_TYPE_GOTO = 1,    // uses heading and distance
   SD_PATH_TYPE_TRAVEL = 2,  // uses lat/lon in whatever heading
   SD_PATH_TYPE_SET = 3,     // sets lat/lon
-} squid_path_type_t;
+} squid_path_type_e;
 
 // STRUCTS ----------------------------------------------------------------------------
 typedef struct {
-  squid_path_type_t type;
+  squid_path_type_e type;
   double param1;  // can be heading or lat
   double param2;  // can be distance (in m) or lon
 } squid_path_t;
@@ -170,8 +155,8 @@ public:
   void setRemoteIdAsFAARegistration(char *input);
   void clearRemoteId();
   void setDescription(char *input);
-  void setMode(squid_mode_t m);
-  void setPathMode(squid_path_mode_t m);
+  void setMode(squid_mode_e m);
+  void setPathMode(squid_path_mode_e m);
   void setDiffuser(uint32_t diff);
 
   void idlePath();
@@ -183,8 +168,8 @@ public:
   void setMac(uint8_t *);
   void setRandomMac();
   void reset();
-  squid_mode_t getMode();
-  squid_path_mode_t getPathMode();
+  squid_mode_e getMode();
+  squid_path_mode_e getPathMode();
 
 private:
   void continueRandomPath();
@@ -195,8 +180,8 @@ private:
   squid_data_t data = {};
   squid_path_t path[PATH_SIZE];
   Stream *Debug_Serial = NULL;
-  squid_mode_t mode = SD_MODE_IDLE;
-  squid_path_mode_t pathMode = SD_PATH_MODE_IDLE;
+  squid_mode_e mode = SD_MODE_IDLE;
+  squid_path_mode_e pathMode = SD_PATH_MODE_IDLE;
   Squid_Network *network;
 
   LatLon_t

@@ -106,7 +106,7 @@ Squid_Instance::Squid_Instance() {
   location_data->TSAccuracy = ODID_TIME_ACC_1_5_SECOND;
 
   selfID_data->DescType = ODID_DESC_TYPE_TEXT;
-  strcpy(selfID_data->Desc, DEFAULT_DESCRIPTION);
+  strcpy(selfID_data->Desc, "");
 
   odid_initSystemData(system_data);
 
@@ -144,11 +144,11 @@ void Squid_Instance::begin(Squid_Network *n) {
   p.eu_class = 0;
   p.uas_type = ODID_UATYPE_NONE;
   begin(n, p);
-  setSpeed(DEFAULT_SPEED);
-  setName(DEFAULT_NAME);
-  setRemoteId(DEFAULT_REMOTE_ID, ODID_IDTYPE_SERIAL_NUMBER);
-  setDescription(DEFAULT_DESCRIPTION);
-  setType(ODID_UATYPE_NONE);
+  //setSpeed(DEFAULT_SPEED);
+  //setName(DEFAULT_NAME);
+  //setRemoteId(DEFAULT_REMOTE_ID, ODID_IDTYPE_SERIAL_NUMBER);
+  //setDescription(DEFAULT_DESCRIPTION);
+  //setType(ODID_UATYPE_NONE);
 }
 
 void Squid_Instance::loop() {
@@ -290,19 +290,19 @@ void Squid_Instance::setDescription(char *input) {
   strcpy(params.uas_description, input);
 }
 
-void Squid_Instance::setMode(squid_mode_t m) {
+void Squid_Instance::setMode(squid_mode_e m) {
   mode = m;
 }
 
-squid_mode_t Squid_Instance::getMode() {
+squid_mode_e Squid_Instance::getMode() {
   return mode;
 }
 
-void Squid_Instance::setPathMode(squid_path_mode_t m) {
+void Squid_Instance::setPathMode(squid_path_mode_e m) {
   pathMode = m;
 }
 
-squid_path_mode_t Squid_Instance::getPathMode() {
+squid_path_mode_e Squid_Instance::getPathMode() {
   return pathMode;
 }
 

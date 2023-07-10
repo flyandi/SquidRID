@@ -199,7 +199,7 @@ void loop_cmd() {
 
 void store() {
   Preferences preferences;
-  squid_mode_t fly_mode = RUNTIME.fly_mode;
+  squid_mode_e fly_mode = RUNTIME.fly_mode;
   RUNTIME.fly_mode = SD_MODE_IDLE;
   preferences.begin(PREF_APP, false);
   preferences.putInt(PREF_VERSION_KEY, VERSION);

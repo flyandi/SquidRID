@@ -34,7 +34,8 @@
 #ifndef _SQUID_CONST_
 #define _SQUID_CONST_
 
-#define VERSION 1005
+
+#define VERSION 1007
 #define CMD_BAUDRATE 115200
 
 #define CURRENT_INTERVAL 500
@@ -51,12 +52,17 @@ typedef enum {
   MODE_SIM = 0,
   MODE_PEST = 1,
   MODE_REAL = 2,
-} squid_app_mode_t;
+} squid_app_mode_e;
 
 typedef enum {
   EXTERNAL_NONE = 0,
   EXTERNAL_GPS = 1,
   EXTERNAL_LTM = 2,
-} squid_external_mode_t;
+} squid_external_mode_e;
+
+typedef enum {
+  SHIFT_NONE = 0,
+  SHIFT_RADIUS = 1,
+} squid_shift_mode_e;
 
 #endif

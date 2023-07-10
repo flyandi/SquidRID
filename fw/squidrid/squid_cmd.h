@@ -31,8 +31,8 @@
  * THE SOFTWARE.
  **/
 
-#ifndef _BO_CMD_
-#define _BO_CMD_
+#ifndef _SQUID_CMD_
+#define _SQUID_CMD_
 
 #include <vector>
 #include <Arduino.h>
@@ -170,8 +170,8 @@ const cmd_command_t _cmd_commands[] = {
          offset += snprintf(path + offset, pathLength - offset, "%g|%g|", runtime->path[i].param1, runtime->path[i].param2);
        }
      }
- 
-     Serial.printf("$D|%d|%s|%s|%s|%d|%d|%f|%f|%d|%f|%f|%d|%d|%d|%s|%d|%f|%f|%d|%d|%d|%s\r\n",
+
+     Serial.printf("$D|%d|%s|%s|%s|%d|%d|%f|%f|%d|%f|%f|%d|%d|%d|%s|%d|%f|%f|%d|%d|%d|%d|%d|%d|%d|%d|%d|%d|%d|%s\r\n",
                    VERSION,
                    runtime->params->uas_id,
                    runtime->params->uas_operator,
@@ -192,6 +192,14 @@ const cmd_command_t _cmd_commands[] = {
                    runtime->pe_lng,
                    runtime->pe_radius,
                    runtime->pe_spawn,
+                   runtime->ext_protocol,
+                   runtime->ext_baud,
+                   runtime->ext_rx_pin,
+                   runtime->ext_tx_pin,
+                   runtime->ext_shift_mode,
+                   runtime->ext_shift_radius,
+                   runtime->ext_shift_min,
+                   runtime->ext_shift_max,
                    length,
                    length > 0 ? path : "");
      return CMD_INFO;
@@ -200,7 +208,7 @@ const cmd_command_t _cmd_commands[] = {
   // Store Data
   { "$SD", [](runtime_t *runtime, const String &value) {
      std::vector<Attr> tokens = _parseAttr(value, AttrDelimiter);
-     if (tokens.size() == 19) {
+     if (tokens.size() >= 19) {
        strlcpy(runtime->params->uas_id, tokens[0].asString().c_str(), sizeof(runtime->params->uas_id));
        strlcpy(runtime->params->uas_operator, tokens[1].asString().c_str(), sizeof(runtime->params->uas_operator));
        strlcpy(runtime->params->uas_description, tokens[2].asString().c_str(), sizeof(runtime->params->uas_description));
@@ -215,11 +223,21 @@ const cmd_command_t _cmd_commands[] = {
        runtime->speed = tokens[11].asInt();
        runtime->sats = tokens[12].asInt();
        sscanf(tokens[13].asString().c_str(), "%hhx:%hhx:%hhx:%hhx:%hhx:%hhx", &runtime->mac[0], &runtime->mac[1], &runtime->mac[2], &runtime->mac[3], &runtime->mac[4], &runtime->mac[5]);
-       runtime->mode = squid_app_mode_t(tokens[14].asInt());
+       runtime->mode = squid_app_mode_e(tokens[14].asInt());
        runtime->pe_lat = tokens[15].asFloat();
        runtime->pe_lng = tokens[16].asFloat();
        runtime->pe_radius = tokens[17].asInt();
        runtime->pe_spawn = tokens[18].asInt();
+       if (tokens.size() == 27) {
+         runtime->ext_protocol = squid_external_mode_e(tokens[19].asInt());
+         runtime->ext_baud = tokens[20].asInt();
+         runtime->ext_rx_pin = tokens[21].asInt();
+         runtime->ext_tx_pin = tokens[22].asInt();
+         runtime->ext_shift_mode = squid_shift_mode_e(tokens[23].asInt());
+         runtime->ext_shift_radius = tokens[24].asInt();
+         runtime->ext_shift_min = tokens[25].asInt();
+         runtime->ext_shift_max = tokens[26].asInt();
+       }
        return CMD_STORE;
      }
      return CMD_NONE;
@@ -230,9 +248,9 @@ const cmd_command_t _cmd_commands[] = {
      //Serial.println(value);
      std::vector<Attr> tokens = _parseAttr(value, AttrDelimiter);
      if (tokens.size() >= 6) {
-       runtime->mode = squid_app_mode_t(tokens[0].asInt());
-       runtime->fly_mode = squid_mode_t(tokens[1].asInt());
-       runtime->path_mode = squid_path_mode_t(tokens[2].asInt());
+       runtime->mode = squid_app_mode_e(tokens[0].asInt());
+       runtime->fly_mode = squid_mode_e(tokens[1].asInt());
+       runtime->path_mode = squid_path_mode_e(tokens[2].asInt());
        runtime->speed = tokens[3].asInt();
        runtime->alt = tokens[4].asInt();
 

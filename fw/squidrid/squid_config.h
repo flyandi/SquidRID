@@ -30,45 +30,40 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  **/
+#ifndef _SQUID_CONFIG_
+#define _SQUID_CONFIG_
 
-#ifndef _SQUID_DEF_
-#define _SQUID_DEF_
-
-#include "squid_const.h"
-#include "squid_instance.h"
+//#include "squid_def.h"
 
 
-#define MAX_SQUID_PATH 32
+///  ////////////////////////////////////////////////////////////////////////////////////////// ///
+///  
+///  This is the default configuration. If you never use the configurator you can
+///  statically configure SquidRID here
+///  
+///  ////////////////////////////////////////////////////////////////////////////////////////// ///
 
-typedef struct
-{
-  squid_app_mode_e mode;
-  squid_params_t* params;
-  squid_data_t* data;
-  squid_mode_e fly_mode;
-  squid_path_mode_e path_mode;
-  uint8_t mac[6];
-  squid_path_t path[MAX_SQUID_PATH];
-  float lat = 0.0;
-  float lng = 0.0;
-  uint16_t alt = 0;
-  float op_lat = 0.0;
-  float op_lng = 0.0;
-  uint16_t op_alt = 100;
-  uint16_t speed = 100;
-  uint16_t sats = 8;
-  float pe_lat = 0.0;
-  float pe_lng = 0.0;
-  uint16_t pe_radius = 1500;
-  uint8_t pe_spawn = 5;
-  squid_external_mode_e ext_protocol;
-  uint16_t ext_baud;
-  uint16_t ext_rx_pin;
-  uint16_t ext_tx_pin;
-  squid_shift_mode_e ext_shift_mode;
-  uint16_t ext_shift_radius;
-  uint16_t ext_shift_min;
-  uint16_t ext_shift_max;
-} runtime_t;
+
+
+#define USE_WIFI_NAN 0
+#define USE_WIFI_BEACON 0
+#define USE_WIFI 0  // set to 0 if any of above enabled
+#define USE_BT 1    // ASTM F3411-19 /  ASD-STAN 4709-002.  .
+#define USE_BEACON_FUNC 0
+#define USE_NATIVE_WIFI 0
+
+#define SATS_LEVEL_1 4
+#define SATS_LEVEL_2 7
+#define SATS_LEVEL_3 10
+
+#define DEFAULT_ALT 137.0
+#define DEFAULT_SPEED 60
+#define DEFAULT_NAME "UAS_NO_NAME"
+#define DEFAULT_REMOTE_ID ""
+#define DEFAULT_DESCRIPTION "Recreational"
+
+
+
 
 #endif
+
