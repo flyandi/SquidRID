@@ -65,10 +65,6 @@ const MapPestMode = {
   Origin: 4,
 }
 
-const MapExternalMode = {
-  Pan: 0,
-}
-
 const AppMode = {
   Squid: 0,
   Pest: 1,
@@ -150,7 +146,7 @@ function App() {
   const [pathMode, setPathMode] = useState(PathMode.Idle);
   const [zoom] = useState(16);
   const [lock, setLock] = useState(false);
-  const [appMode, setAppMode] = useState(AppMode.Squid);
+  const [appMode, setAppMode] = useState(AppMode.Sim);
   const [trail, setTrail] = useState([]);
   const [path, setPath] = useState([]);
   const [showProfile, setShowProfile] = useState(false);
@@ -311,7 +307,7 @@ function App() {
       }
       if (c === "D") {
         setData({ ...data, version: p[1], rid: p[2], operator: p[3], description: p[4], uatype: p[5], idtype: p[6], lat: p[7], lng: p[8], alt: p[9], op_lat: p[10], op_lng: p[11], op_alt: p[12], spd: p[13], sats: p[14], mac: p[15], pe_lat: p[17], pe_lng: p[18], pe_radius: I(p[19]), pe_spawn: I(p[20]) });
-        setAppMode(I(p[16]) || AppMode.Squid);
+        setAppMode(I(p[16]) || AppMode.Sim);
         const pc = I(p[21]);
         const pp =  pc != 0 ? fromPath([p[7], p[8]], inflatePath(p.slice(22, -1))) : [];
         console.log("[path]", pc, pp);
@@ -374,7 +370,7 @@ function App() {
     }
   }, [connected]);
 
-  if (connected) {
+  if (!connected) {
     return (
       <div id="screen">
         <div>
@@ -482,7 +478,7 @@ function App() {
           subdomains={["clarity"]}
           url="https://stamen-tiles.a.ssl.fastly.net/toner/{z}/{x}/{y}.png"
         />
-        <Display condition={appMode === AppMode.Squid}>
+        <Display condition={appMode === AppMode.Sim}>
           <Circle color="red" center={[position.lat, position.lng]} radius={15} />
           <Circle color="blue" center={[position.op_lat, position.op_lng]} radius={10} />
           {position.lat && trail.length ? <Polyline pathOptions={{ color: "red" }} positions={[[position.lat, position.lng], ...trail]} /> : null}
@@ -512,7 +508,7 @@ function App() {
 
         <LocationMarker onEvent={handleMapEvent} />
         <Control position="bottomleft">
-          <Display condition={mapMode === MapMode.Pan && (appMode == AppMode.External || appMode === AppMode.Squid)}>
+          <Display condition={mapMode === MapMode.Pan && appMode === AppMode.Sim}>
             <div className="telemetry">
               <div><span>Lat</span>{F(position.lat)}</div>
               <div><span>Lng</span>{F(position.lng)}</div>
@@ -528,7 +524,7 @@ function App() {
         </Control>
         <Control position="bottomright" prepend>
           <div className="map-control right">
-            <Display condition={appMode === AppMode.Squid}>
+            <Display condition={appMode === AppMode.Sim}>
               {Object.keys(MapMode).map(key =>
                 <Button key={key} disabled={lock} selected={mapMode === MapMode[key]} name={key} onPress={handleMapMode(MapMode[key])} />
               )}
@@ -538,23 +534,18 @@ function App() {
                 <Button key={key} disabled={lock} selected={mapMode === MapPestMode[key]} name={key} onPress={handleMapMode(MapPestMode[key])} />
               )}
             </Display>
-            <Display condition={appMode === AppMode.External}>
-              {Object.keys(MapExternalMode).map(key =>
-                <Button key={key} disabled={lock} selected={mapMode === MapPestMode[key]} name={key} onPress={handleMapMode(MapPestMode[key])} />
-              )}
-            </Display>
 
           </div>
         </Control>
         <Control position="bottomleft">
-          <Display condition={appMode === AppMode.Squid || appMode === AppMode.External}>
+          <Display condition={appMode === AppMode.Sim}>
             <div className="map-control sl">
               <div>{data.operator || "No Name"}</div>
               <div>{data.rid || "No ID"}</div>
             </div>
           </Display>
           <div className="map-control inline">
-            <Display condition={appMode === AppMode.Squid}>
+            <Display condition={appMode === AppMode.Sim}>
               <Button name="Center" onPress={handleMapCenter} />
               <Button name="OP" onPress={handleMapOPCenter} />
             </Display>
@@ -583,14 +574,14 @@ function App() {
               <Button key={key} disabled={lock} selected={flyMode === FlyMode[key]} name={key} onPress={handleFlyMode(FlyMode[key])} />
             )}
           </div>
-          <Display condition={mapMode === MapMode.Pan && appMode === AppMode.Squid}>
+          <Display condition={mapMode === MapMode.Pan && appMode === AppMode.Sim}>
             <div className="map-control inline">
               {Object.keys(PathMode).map(key =>
                 <Button key={key} disabled={lock} selected={pathMode === PathMode[key]} name={key} onPress={handlePathMode(PathMode[key])} />
               )}
             </div>
           </Display>
-          <Display condition={mapMode === MapMode.Pan && appMode === AppMode.Squid}>
+          <Display condition={mapMode === MapMode.Pan && appMode === AppMode.Sim}>
             <div className="map-control inline">
               <RemoteControlButton name="SPD" steps={[0, 50, 100, 200]} onChange={handleRM("spd")} />
               <RemoteControlButton name="ALT" steps={[0, 100, 500, 1000]} onChange={handleRM("alt")} />
