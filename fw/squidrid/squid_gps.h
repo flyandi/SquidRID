@@ -38,21 +38,23 @@
 
 static struct
 {
-  int32_t lat;
-  int32_t lng;
-  int32_t alt;
-  uint8_t spd;
+  float lat;
+  float lng;
+  int16_t alt;
+  int16_t spd;
   uint8_t fix;
   uint8_t sats;
 } GPS_DATA;
 
 static SoftwareSerial gps_serial;
 
-static float gps_parse_latlng(char *token) {
-  return atof(token) / 100.0;
+static float gps_parse_value(char *token, float d = 100.0) {
+  return atof(token) / d;
 }
 
-static void gps_begin(uint16_t baud, uint16_t rx_pin, uint16_t tx_pin) {
+static void gps_begin(uint16_t baud, uint8_t rx_pin, uint8_t tx_pin) {
+  pinMode(rx_pin, INPUT);
+  pinMode(tx_pin, OUTPUT);
   gps_serial.begin(baud, SWSERIAL_8N1, rx_pin, tx_pin, false);
 }
 
@@ -75,11 +77,11 @@ static void gps_parse(char c) {
     if (strstr(sentence, "GPGGA")) {
       char *token = strtok(sentence, ",");
       int tokenIndex = 0;
-
+      
       while (token != NULL) {
         if (tokenIndex == 2) {
           // Latitude
-          GPS_DATA.lat = gps_parse_latlng(token);
+          GPS_DATA.lat = gps_parse_value(token);
         } else if (tokenIndex == 3) {
           // Latitude hemisphere
           if (token[0] == 'S') {
@@ -87,7 +89,7 @@ static void gps_parse(char c) {
           }
         } else if (tokenIndex == 4) {
           // Longitude
-          GPS_DATA.lng = gps_parse_latlng(token);
+          GPS_DATA.lng = gps_parse_value(token);
         } else if (tokenIndex == 5) {
           // Longitude hemisphere
           if (token[0] == 'W') {
@@ -118,6 +120,8 @@ static void gps_parse(char c) {
 
 static void gps_loop() {
   if (gps_serial.available()) {
+    char c = gps_serial.read();
+    gps_parse(c);
   }
 }
 

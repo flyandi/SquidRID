@@ -74,6 +74,12 @@ h2 {
   margin-bottom: 1rem;
 }
 
+h3 {
+  transform: skew(5deg);
+  color: #fff;
+  margin-bottom:1rem;
+  font-size:1rem;
+}
 
 input,
 form {

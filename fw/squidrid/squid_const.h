@@ -40,6 +40,7 @@
 
 #define CURRENT_INTERVAL 500
 #define PEST_INTERVAL 9500
+#define EXTERNAL_INTERVAL 1000
 #define AUTO_START_TIMEOUT 30000
 
 const char* PREF_APP = "__SQUID__";
@@ -51,7 +52,7 @@ const char* PREF_PATH_KEY = "_H";
 typedef enum {
   MODE_SIM = 0,
   MODE_PEST = 1,
-  MODE_REAL = 2,
+  MODE_EXTERNAL = 2,
 } squid_app_mode_e;
 
 typedef enum {

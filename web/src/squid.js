@@ -32,3 +32,10 @@ export const status_t = {
     "EMERGENCY": 3,
     "REMOTE_ID_SYSTEM_FAILURE": 4
 };
+
+
+export const external_t = {
+    "NONE": 0,
+    "GPS": 1,
+    "LTM": 2,
+};

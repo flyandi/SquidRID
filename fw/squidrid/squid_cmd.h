@@ -99,7 +99,7 @@ typedef struct
 
 void _cmd_current(runtime_t *runtime) {
 
-  if (runtime->mode == MODE_SIM) {
+  if (runtime->mode == MODE_SIM || runtime->mode == MODE_EXTERNAL) {
     Serial.printf("$C|%f|%f|%f|%f|%f|%f|%d|%d|%d|%d|%d\r\n",
                   runtime->data->latitude_d,
                   runtime->data->longitude_d,
@@ -192,7 +192,7 @@ const cmd_command_t _cmd_commands[] = {
                    runtime->pe_lng,
                    runtime->pe_radius,
                    runtime->pe_spawn,
-                   runtime->ext_protocol,
+                   runtime->ext_mode,
                    runtime->ext_baud,
                    runtime->ext_rx_pin,
                    runtime->ext_tx_pin,
@@ -229,7 +229,7 @@ const cmd_command_t _cmd_commands[] = {
        runtime->pe_radius = tokens[17].asInt();
        runtime->pe_spawn = tokens[18].asInt();
        if (tokens.size() == 27) {
-         runtime->ext_protocol = squid_external_mode_e(tokens[19].asInt());
+         runtime->ext_mode = squid_external_mode_e(tokens[19].asInt());
          runtime->ext_baud = tokens[20].asInt();
          runtime->ext_rx_pin = tokens[21].asInt();
          runtime->ext_tx_pin = tokens[22].asInt();
@@ -247,23 +247,25 @@ const cmd_command_t _cmd_commands[] = {
   { "$SM", [](runtime_t *runtime, const String &value) {
      //Serial.println(value);
      std::vector<Attr> tokens = _parseAttr(value, AttrDelimiter);
-     if (tokens.size() >= 6) {
+     if (tokens.size() >= 2) {
        runtime->mode = squid_app_mode_e(tokens[0].asInt());
        runtime->fly_mode = squid_mode_e(tokens[1].asInt());
-       runtime->path_mode = squid_path_mode_e(tokens[2].asInt());
-       runtime->speed = tokens[3].asInt();
-       runtime->alt = tokens[4].asInt();
+       if (tokens.size() >= 3) {
+         runtime->path_mode = squid_path_mode_e(tokens[2].asInt());
+         runtime->speed = tokens[3].asInt();
+         runtime->alt = tokens[4].asInt();
 
-       std::memset(runtime->path, SD_PATH_TYPE_NONE, sizeof(runtime->path));
-
-       // $SM|0|0|2|0|0|6|179|213|91|320|10|250|342|231|271|386|161|270
-       uint8_t pc = (tokens.size() - 6) / 2;
-       if (pc > 0 && pc <= MAX_SQUID_PATH) {
-         for (uint8_t i = 0, n = 0; i < pc; i++, n += 2) {
-           runtime->path[i] = { SD_PATH_TYPE_GOTO, static_cast<double>(tokens[6 + n].asFloat()), static_cast<double>(tokens[6 + n + 1].asFloat()) };
+         if (tokens.size() >= 6) {
+           std::memset(runtime->path, SD_PATH_TYPE_NONE, sizeof(runtime->path));
+           // $SM|0|0|2|0|0|6|179|213|91|320|10|250|342|231|271|386|161|270
+           uint8_t pc = (tokens.size() - 6) / 2;
+           if (pc > 0 && pc <= MAX_SQUID_PATH) {
+             for (uint8_t i = 0, n = 0; i < pc; i++, n += 2) {
+               runtime->path[i] = { SD_PATH_TYPE_GOTO, static_cast<double>(tokens[6 + n].asFloat()), static_cast<double>(tokens[6 + n + 1].asFloat()) };
+             }
+           }
          }
        }
-
        return CMD_STORE;
      }
      return CMD_NONE;
