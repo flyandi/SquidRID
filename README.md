@@ -16,6 +16,16 @@ The configurator is accessible at [https://squidrid.flyandi.net](https://squidri
 
 SquidRID run's on most ESP32 boards and requires the Arduino IDE to upload the firmware.
 
+## Features
+```
+[ ] Conforms to Remote ID Standards ASTM F3411-22a, ASD-STAN 4709-002
+[ ] Exposes most of the usable protocol operations including Operator Location
+[ ] Bluetooth and Wifi are supported (Only selectable through firmware right now)
+[ ] Simulation Mode with options for Hold, Random, Follow Path mode. Variable altitude and speed options.
+[ ] Pester Mode (Spawns Drones every n seconds, configurable)
+[ ] Supports configurable external sensors such as GPS and Flight Controllers (via LTM Telemetry protocol)
+```
+
 ## Squid Mode
 
 Squid Mode can simulate many aspects of the RemoteID protocol for a single drone instance also called a Squid. 
@@ -28,6 +38,16 @@ In Pest Mode, SquidRID will spawns x rows every n seconds that are both configur
 
 ![](docs/pest.png) 
 
+## External Mode
+
+This firmware supports external sensors. Currently GPS NEMA/UBLOX as well LTM protocls are supported and can be configured in the profile and run via the `EXTERNAL` mode (Serial Command: `$SM|2|1`).
+
+![](docs/ext.png)
+
+Both protocols are serial protocols and you have to configure your RX and TX pin's in the configurator. 
+
+![](docs/ext_prot.png)
+
 ## IS THIS LEGAL?
 
 Yes and Maybe Not. Many developers that build systems supporting RemoteID require a realistic way to test their implementations and this tool provides a means to do so. This tool also provides additional functionality such as security and penetration testing of RemoteID. 
@@ -36,25 +56,14 @@ This tool may be used for educational purposes only and may violate laws or may 
 
 By using this software you always agree that the author(s) of this software shall under no curcimstances be held liable for the use and/or operation of this software by any party.
 
-## Features
-```
-[ ] Conforms to Remote ID Standards ASTM F3411-22a
-[ ] Exposes most of the usable protocol operations including Operator Location
-[ ] Bluetooth only right now / WiFi has to be re-activated 
-[ ] Simulation Mode with options for Hold, Random, Follow Path mode. Variable altitude and speed options.
-[ ] Pester Mode (Spawns Drones every n seconds, configurable)
-```
+
 
 ## Work In Progress
 
 While many parts are ready to use there a few that are still under development:
 
 ```
-[ ] Ability to run pre-programmed path's.
-[ ] Ability to generate dynamic Remote Serial ID's.
 [ ] Update Documentation
-[ ] Re-enable WiFi support
-[ ] Real GPS Support (why not)
 ```
 
 ## Configurator 
