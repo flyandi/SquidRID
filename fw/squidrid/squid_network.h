@@ -37,7 +37,6 @@
 #include <WiFi.h>
 #include <esp_system.h>
 #include <esp_event.h>
-#include <esp_event_loop.h>
 #include <esp_wifi.h>
 #include <esp_wifi_types.h>
 #include <nvs_flash.h>
@@ -47,7 +46,7 @@
 esp_err_t esp_wifi_80211_tx(wifi_interface_t ifx, const void *buffer, int len, bool en_sys_seq);
 esp_err_t event_handler(void *, system_event_t *);
 
-static const char *password = "password";
+//static const char *password = "password";
 
 #define SD_NETWORK_QUEUE_SIZE 100
 #define SD_NETWORK_PULSE 60

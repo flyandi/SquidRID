@@ -57,7 +57,7 @@ squid_profile_t Squid_Profiles[] = {
 
 const size_t squid_num_profiles = sizeof(Squid_Profiles) / sizeof(squid_profile_t);
 
-char* Squid_Descriptions[] = { "Recreational", "Commercial", "Industrial", "Military", "Remote Sensing", "n/a" };
+const char* Squid_Descriptions[] = { "Recreational", "Commercial", "Industrial", "Military", "Remote Sensing", "n/a" };
 
 const size_t squid_num_descriptions = sizeof(Squid_Descriptions) / sizeof(Squid_Descriptions[0]);
 

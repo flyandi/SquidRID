@@ -53,7 +53,7 @@ Squid_Instance::Squid_Instance() {
   memset(msg_counter, 0, sizeof(msg_counter));
 
   strcpy(wifi_ssid, "UAS_ID_OPEN");
-  uas_operator = "";
+  uas_operator = nullptr;
 
   setRandomMac();
 
@@ -256,7 +256,7 @@ void Squid_Instance::setOperatorAltitude(int alt) {
   data.op_alt_m = alt;
 }
 
-void Squid_Instance::setName(char *input) {
+void Squid_Instance::setName(const char *input) {
   strcpy(params.uas_operator, input);
 }
 
@@ -269,16 +269,16 @@ void Squid_Instance::setSpeed(int speed) {
   speed_m_x = ((float)speed) * M_MPH_MS / 5.0;
 }
 
-void Squid_Instance::setRemoteId(char *input, ODID_idtype_t type) {
+void Squid_Instance::setRemoteId(const char *input, ODID_idtype_t type) {
   strcpy(params.uas_id, input);
   params.id_type = type;
 }
 
-void Squid_Instance::setRemoteIdAsSerial(char *input) {
+void Squid_Instance::setRemoteIdAsSerial(const char *input) {
   setRemoteId(input, ODID_IDTYPE_SERIAL_NUMBER);
 }
 
-void Squid_Instance::setRemoteIdAsFAARegistration(char *input) {
+void Squid_Instance::setRemoteIdAsFAARegistration(const char *input) {
   setRemoteId(input, ODID_IDTYPE_ID_ASSIGNED_UUID);
 }
 
@@ -286,7 +286,7 @@ void Squid_Instance::clearRemoteId() {
   setRemoteId("", ODID_IDTYPE_NONE);
 }
 
-void Squid_Instance::setDescription(char *input) {
+void Squid_Instance::setDescription(const char *input) {
   strcpy(params.uas_description, input);
 }
 
@@ -428,7 +428,7 @@ void Squid_Instance::update(squid_params_t *parameters) {
 
   //
 
-  if (uas_operator[0]) {
+  if (uas_operator && uas_operator[0]) {
 
     strncpy(wifi_ssid, uas_operator, i = sizeof(wifi_ssid));
     wifi_ssid[i - 1] = 0;
@@ -968,7 +968,7 @@ int Squid_Instance::transmit_ble(uint8_t *odid_msg, int length) {
   ble_interval = msecs - last_ble;
   last_ble = msecs;
 
-  int i, j, k, len, status;
+  int i, j, k, len;
   uint8_t *a;
 
   i = j = k = len = 0;
