@@ -98,8 +98,8 @@ bool Squid_Network::dequeue(Squid_Network_Message *message)
 bool Squid_Network::addMessage(uint8_t mac[6], char ssid[32], int ssid_length, uint8_t *buffer, int length)
 {
     Squid_Network_Message message;
-    memcpy(message.mac, mac, sizeof(mac));
-    strncpy(message.ssid, ssid, sizeof(ssid));
+    memcpy(message.mac, mac, 6);
+    strncpy(message.ssid, ssid, 32);
     message.ssid_length = ssid_length;
     message.buffer = buffer;
     message.length = length;

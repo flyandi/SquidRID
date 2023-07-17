@@ -180,7 +180,7 @@ void loop() {
   if (RUNTIME.fly_mode == SD_MODE_IDLE && !in_serial) {
     if (millis() - auto_t > AUTO_START_TIMEOUT) {
       in_serial = true;
-      RUNTIME.fly_mode == SD_MODE_FLY;
+      RUNTIME.fly_mode = SD_MODE_FLY;
       update_squid();
     }
   }
