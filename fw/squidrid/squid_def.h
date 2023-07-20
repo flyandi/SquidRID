@@ -67,8 +67,8 @@ typedef struct
   uint16_t ext_tx_pin;
   squid_shift_mode_e ext_shift_mode;
   uint16_t ext_shift_radius;
-  uint16_t ext_shift_min;
-  uint16_t ext_shift_max;
+  float ext_shift_p1;
+  float ext_shift_p2;
 } runtime_t;
 
 #endif

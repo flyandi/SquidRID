@@ -171,7 +171,7 @@ const cmd_command_t _cmd_commands[] = {
        }
      }
 
-     Serial.printf("$D|%d|%s|%s|%s|%d|%d|%f|%f|%d|%f|%f|%d|%d|%d|%s|%d|%f|%f|%d|%d|%d|%d|%d|%d|%d|%d|%d|%d|%d|%s\r\n",
+     Serial.printf("$D|%d|%s|%s|%s|%d|%d|%f|%f|%d|%f|%f|%d|%d|%d|%s|%d|%f|%f|%d|%d|%d|%d|%d|%d|%d|%d|%f|%f|%d|%s\r\n",
                    VERSION,
                    runtime->params->uas_id,
                    runtime->params->uas_operator,
@@ -198,8 +198,8 @@ const cmd_command_t _cmd_commands[] = {
                    runtime->ext_tx_pin,
                    runtime->ext_shift_mode,
                    runtime->ext_shift_radius,
-                   runtime->ext_shift_min,
-                   runtime->ext_shift_max,
+                   runtime->ext_shift_p1,
+                   runtime->ext_shift_p2,
                    length,
                    length > 0 ? path : "");
      return CMD_INFO;
@@ -235,8 +235,8 @@ const cmd_command_t _cmd_commands[] = {
          runtime->ext_tx_pin = tokens[22].asInt();
          runtime->ext_shift_mode = squid_shift_mode_e(tokens[23].asInt());
          runtime->ext_shift_radius = tokens[24].asInt();
-         runtime->ext_shift_min = tokens[25].asInt();
-         runtime->ext_shift_max = tokens[26].asInt();
+         runtime->ext_shift_p1 = tokens[25].asFloat();
+         runtime->ext_shift_p2 = tokens[26].asFloat();
        }
        return CMD_STORE;
      }

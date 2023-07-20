@@ -35,7 +35,7 @@
 #define _SQUID_CONST_
 
 
-#define VERSION 1007
+#define VERSION 1008
 #define CMD_BAUDRATE 115200
 
 #define CURRENT_INTERVAL 500
@@ -63,7 +63,8 @@ typedef enum {
 
 typedef enum {
   SHIFT_NONE = 0,
-  SHIFT_RADIUS = 1,
+  SHIFT_LOCATION = 1,
+  SHIFT_RADIUS = 2,
 } squid_shift_mode_e;
 
 #endif

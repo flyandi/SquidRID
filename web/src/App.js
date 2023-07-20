@@ -87,6 +87,12 @@ const PathMode = {
   Follow: 2,
 }
 
+const ExtMode = {
+  None: 0,
+  Shift: 4,
+  Radius: 5,
+}
+
 const RadiusMode = [500, 1000, 2000, 3000, 5000, 10000];
 const MinRadius = 500;
 
@@ -102,14 +108,17 @@ const Display = ({ condition, children }) => {
   return children;
 }
 
-const RemoteControlButton = ({ name, selected = false, steps, onChange }) => {
+const RemoteControlButton = ({ name, selected = false, steps, onChange, useValue = false }) => {
   const handle = value => () => onChange(value);
   return (
     <div className="remote-control">
       <button className="text" disabled>{name}</button>
-      {(steps || []).map(step =>
-        <Button selected={selected === step} key={step} name={step} onPress={handle(step)} />
-      )}
+      {(steps || []).map((step, key) => {
+        const u = useValue ? key : step;
+        return (
+          <Button selected={selected === u} key={u} name={step} onPress={handle(u)} />
+        )
+      })}
     </div>
   )
 }
@@ -136,7 +145,6 @@ const LocationMarker = ({ onEvent }) => {
 }
 
 
-
 function App() {
 
   const [connected, setConnected] = useState(false);
@@ -157,6 +165,7 @@ function App() {
   const [showPath, setShowPath] = useState(false);
   const [error, setError] = useState(false);
   const [first, setFirst] = useState(true);
+  const [extMode, setExtMode] = useState(ExtMode.None);
 
   const serialCommand = (command, args = []) => {
     if (connected) {
@@ -270,6 +279,12 @@ function App() {
     handleDataUpdate(dt);
   }
 
+  const handleExtRadius = v => {
+    const dt = { ext_radius: RadiusMode[v - 1] || MinRadius };
+    setData({ ...data, ...dt })
+    handleDataUpdate(dt);
+  }
+
   const handleClearPath = () => {
     setPath([...[]]);
   }
@@ -315,19 +330,19 @@ function App() {
         setFlyMode(I(p[12]));
       }
       if (c === "D") {
-        setData({ 
-          ...data, 
-          version: p[1], rid: p[2], operator: p[3], description: p[4], uatype: p[5], idtype: p[6], lat: p[7], lng: p[8], alt: p[9], op_lat: p[10], op_lng: p[11], op_alt: p[12], 
-          spd: p[13], sats: p[14], mac: p[15], pe_lat: p[17], pe_lng: p[18], pe_radius: I(p[19]), pe_spawn: I(p[20]), 
-          ext_mode: I(p[21]), ext_baud: I(p[22]), ext_rx_pin: I(p[23]), ext_tx_pin: I(p[24]), ext_shift_mode: I(p[25]), ext_shift_radius: I(p[26]), ext_shift_min: I(p[27]), ext_shift_max: I(p[28]),
-          
-         });
+        setData({
+          ...data,
+          version: p[1], rid: p[2], operator: p[3], description: p[4], uatype: p[5], idtype: p[6], lat: p[7], lng: p[8], alt: p[9], op_lat: p[10], op_lng: p[11], op_alt: p[12],
+          spd: p[13], sats: p[14], mac: p[15], pe_lat: p[17], pe_lng: p[18], pe_radius: I(p[19]), pe_spawn: I(p[20]),
+          ext_mode: I(p[21]), ext_baud: I(p[22]), ext_rx_pin: I(p[23]), ext_tx_pin: I(p[24]), ext_shift_mode: I(p[25]), ext_shift_radius: I(p[26]), ext_shift_p1: F(p[27]), ext_shift_p2: F(p[28]),
+
+        });
         setAppMode(I(p[16]) || AppMode.Squid);
+        setExtMode(I(p[21]) || ExtMode.None);
         const pc = I(p[29]);
         const pp = pc !== 0 ? fromPath([p[7], p[8]], inflatePath(p.slice(22, -1))) : [];
-        console.log("[path]", pc, pp);
         setPath(pp);
-
+        console.log("[path]", pc, pp);
       }
     }
   }
@@ -360,6 +375,9 @@ function App() {
           setData({ ...data, ...dd });
           handleDataUpdate(dd);
           break;
+        case MapExtMode.Shift: 
+          // calculate current differences
+          // dd = {ext_shift_p1: }
         default:
           break;
       }
@@ -371,6 +389,12 @@ function App() {
 
   const handleMapMode = m => () => {
     setMapMode(m);
+  }
+
+  const handleExtMode = m => {
+    setExtMode(m);
+    handleDataUpdate({ ext_mode: m });
+    console.log(m);
   }
 
 
@@ -385,7 +409,7 @@ function App() {
     }
   }, [connected]);
 
-  if (!connected) {
+  if (connected) {
     return (
       <div id="screen">
         <div>
@@ -628,11 +652,12 @@ function App() {
           </Display>
           <Display condition={mapMode === MapMode.Pan && appMode === AppMode.External}>
             <div className="map-control inline">
-              {/*
-              <RemoteControlButton name="MIN" steps={[0, 100, 500, 1000]} onChange={handleRM("alt")} />
-              <RemoteControlButton name="MAX" steps={[0, 100, 500, 1000]} onChange={handleRM("alt")} />
-              <RemoteControlButton name="RNG" steps={[1, 2, 3, 4, 5, 6]} onChange={handlePestRadius} />
-              <p>RANGE {data.pe_radius || MinRadius}m MIN {data.pe_spawn}s</p> */}
+              <RemoteControlButton name="MOD" selected={extMode} useValue steps={['NONE', 'SHIFT', 'RADIUS']} onChange={handleExtMode} />
+              <Display condition={extMode == ExtMode.Radius}>
+                <RemoteControlButton name="RNG" steps={[1, 2, 3, 4, 5, 6]} onChange={handleExtRadius} />
+                <p>RANGE {data.ext_radius || MinRadius}m</p>
+              </Display>
+
             </div>
           </Display>
           <Display condition={appMode === AppMode.Pest}>
