@@ -14,7 +14,12 @@ SquidRID is a experimental tool to test and control most of aspects of the FAA R
 
 The configurator is accessible at [https://squidrid.flyandi.net](https://squidrid.flyandi.net) but requires Google Chrome.
 
-SquidRID run's on most ESP32 boards and requires the Arduino IDE to upload the firmware.
+SquidRID run's on most ESP32 boards. Firmware can be compiled and uploaded using either:
+* The Arduino IDE
+  * Open `fw/squidrid/squidrid.ino` in the Arudino IDE. 
+* PlatformIO + Visual Studio Code. 
+  * Open the project by running `code fw/platformio`
+  * See [fw/platformio/README.md](fw/platformio/README.md) for more details. 
 
 ## Features
 ```
